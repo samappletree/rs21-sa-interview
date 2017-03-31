@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./bin/www"
   },
+  "author": "Samantha Applebaum",
   "dependencies": {
     "body-parser": "~1.16.0",
     "cookie-parser": "~1.4.3",
@@ -14,5 +15,8 @@
     "morgan": "~1.7.0",
     "pug": "^2.0.0-beta11",
     "serve-favicon": "~2.3.2"
+  },
+  "engines": {
+    "node": "7.4.0"
   }
 }

@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express', message: 'Hello There!' });
+  res.render('index', { title: 'RS21 - Samantha Applebaum' });
 });
 
 module.exports = router;
