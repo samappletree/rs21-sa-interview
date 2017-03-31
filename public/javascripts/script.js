@@ -25,11 +25,10 @@ function addCensusBlock(map) {
 			    else if ( density < 5000 ) fillColor = "#031830";
 			    else if ( density < 6000 ) fillColor = "#000000";
 			    else fillColor = "#f7fcf0";  // no data
-			    console.log(density + " " + fillColor);
 			    return { color: "#999", weight: 1, fillColor: fillColor, fillOpacity: .6 };
 			},
 			onEachFeature: function(feature, layer){
-				layer.bindPopup(feature.properties.ACS_13_5YR_B01001_with_ann_HD01_VD01)
+				layer.bindPopup(feature.properties.NAMELSAD + "<br/>Population total: " + feature.properties.ACS_13_5YR_B01001_with_ann_HD01_VD01)
 			}
 		}).addTo(map);
 	});
@@ -82,6 +81,20 @@ function onAddTwitterClick() {
 	    }
 		}).addTo(map);
 
+	});
+}
+
+function onAddFBClick() {
+	$.get('data/FacebookPlaces_Albuquerque.csv', function(fbData){
+		var fbRawData = Papa.parse(fbData);
+
+		var fbJSON = {
+			"type": "FeatureCollection",
+			"features": []
+		};
+
+		var lines = fbRawData.data;
+		console.log(lines);
 	});
 }
 
