@@ -7,7 +7,7 @@ L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{
     maxZoom: 18,
 }).addTo(map);
 
-function addCensusBlock(map) {
+function onAddCensusClick() {
 	$.getJSON('data/BernallioCensusBlocks_Joined.json', function(censusData){
 		var censuslayer = L.geoJson(censusData, {
 			style: function(feature){
@@ -28,15 +28,12 @@ function addCensusBlock(map) {
 			    return { color: "#999", weight: 1, fillColor: fillColor, fillOpacity: .6 };
 			},
 			onEachFeature: function(feature, layer){
-				layer.bindPopup(feature.properties.NAMELSAD + "<br/>Population total: " + feature.properties.ACS_13_5YR_B01001_with_ann_HD01_VD01)
+				layer.bindPopup(feature.properties.NAMELSAD + "<br/>Population total: " + feature.properties.ACS_13_5YR_B01001_with_ann_HD01_VD01);
 			}
 		}).addTo(map);
 	});
 }
 
-function onAddCensusClick(){
-	addCensusBlock(map);
-}
 
 function onAddTwitterClick() {
 	$.get('data/Twitter_141103.csv', function(twitterData){
@@ -94,7 +91,43 @@ function onAddFBClick() {
 		};
 
 		var lines = fbRawData.data;
-		console.log(lines);
+		console.log((lines.length - 2)/4);
+		for (var i = (lines.length - 2)/4; i >= 0; i--) {
+			var currentline = lines[i].filter(function(v){return v!==''});;
+			var obj = {
+				"type": "Feature",
+	        	"geometry": {
+	        		"type": "Point"
+	        	},
+	        	"properties": {
+	        		"Name of Place": currentline[0],
+	        	}
+			};
+			switch(currentline.length) {
+				case 8: 
+					obj.geometry.coordinates = [Number(currentline[7]), Number(currentline[6])];
+					obj.properties.Category = [currentline[1], currentline[2], currentline[3], currentline[4]];
+					obj.properties.Checkins = Number(currentline[5]);
+					break;
+				case 7:
+					obj.geometry.coordinates = [Number(currentline[6]), Number(currentline[5])];
+					obj.properties.Category = [currentline[1], currentline[2], currentline[3]];
+					obj.properties.Checkins = Number(currentline[4]);
+					break;
+				case 5:
+					obj.geometry.coordinates = [Number(currentline[4]), Number(currentline[3])];
+					obj.properties.Category = currentline[1];
+					obj.properties.Checkins = Number(currentline[2]);
+					break;
+			}
+			console.log(obj);
+			fbJSON.features.push(obj);
+		}
+
+		L.geoJson(fbJSON,  {
+			onEachFeature: function(feature, layer){
+				layer.bindPopup(feature.properties["Name of Place"] + "<br/>Total Facebook Checkins: " + feature.properties.Checkins);
+	    }).addTo(map);
 	});
 }
 
