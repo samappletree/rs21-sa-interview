@@ -8,21 +8,62 @@ L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{
 
 
 
-var popup = L.popup();
 
-function onMapClick(e) {
-    popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(map);
+function onAddCensusClick() {
+	$.getJSON('data/BernallioCensusBlocks_Joined.json', function(censusData){
+		L.geoJson(censusData, {
+			onEachFeature: function(feature, layer){
+				layer.bindPopup(feature.properties["ACS_13_5YR_B01001_with_ann_GEO.display-label"])
+			}
+		}).addTo(map);
+	});
+	//$('#addCensusbtn').css('display', 'none');
+	//$('#removeCensusbtn').css('display', 'block');
 }
 
-map.on('click', onMapClick);
+function onAddTwitterClick() {
+	$.get('data/Twitter_141103.csv', function(twitterData){
+		var twitterRawData = Papa.parse(twitterData);
 
-var censusData;
+		var twitterJSON = {
+			"type": "FeatureCollection",
+			"features": []
+		};
 
-$.getJSON('data/BernallioCensusBlocks_Joined.json', function(censusData){
-	L.geoJson(censusData).addTo(map);
-	
-});
+		var lines = twitterRawData.data;
+		for (var i = lines.length - 6; i >= 0; i--) {
+			var currentline = lines[i];
+			console.log(currentline);
+			var obj = {
+				"type": "Feature",
+	        	"geometry": {
+	        		"type": "Point", 
+	        		"coordinates": [Number(currentline[3]), Number(currentline[2])]
+	        	},
+	        	"properties": {
+	        		"Tweet": currentline[0],
+	        		"Username": currentline[1],
+	        		"Time": currentline[4]
+	        	}
+			};
+
+			twitterJSON.features.push(obj);
+		}
+		//console.log(twitterJSON);
+
+		var twitterIcon = L.icon({
+			iconUrl: '/images/Twitter_Logo_Blue.png',
+			iconSize: [60,50]
+		});
+
+		L.geoJson(twitterJSON, {
+			pointToLayer: function(feature,latlng){
+	      var marker = L.marker(latlng,{icon: twitterIcon});
+	      marker.bindPopup(feature.properties.Username + '<br/>' + feature.properties.Tweet);
+	      return marker;
+	    }
+		}).addTo(map);
+
+	});
+}
 
