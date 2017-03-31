@@ -7,6 +7,7 @@ L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{
     maxZoom: 18,
 }).addTo(map);
 
+
 function onAddCensusClick() {
 	$.getJSON('data/BernallioCensusBlocks_Joined.json', function(censusData){
 		var censuslayer = L.geoJson(censusData, {
@@ -91,8 +92,8 @@ function onAddFBClick() {
 		};
 
 		var lines = fbRawData.data;
-		console.log((lines.length - 2)/4);
-		for (var i = (lines.length - 2)/4; i >= 0; i--) {
+		console.log((lines.length - 2));
+		for (var i = (lines.length - 2); i >= 0; i--) {
 			var currentline = lines[i].filter(function(v){return v!==''});;
 			var obj = {
 				"type": "Feature",
