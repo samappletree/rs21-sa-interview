@@ -127,6 +127,7 @@ function onAddFBClick() {
 		L.geoJson(fbJSON,  {
 			onEachFeature: function(feature, layer){
 				layer.bindPopup(feature.properties["Name of Place"] + "<br/>Total Facebook Checkins: " + feature.properties.Checkins);
+	   		}
 	    }).addTo(map);
 	});
 }
