@@ -10,8 +10,26 @@ L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{
 function addCensusBlock(map) {
 	$.getJSON('data/BernallioCensusBlocks_Joined.json', function(censusData){
 		var censuslayer = L.geoJson(censusData, {
+			style: function(feature){
+				var fillColor,
+			        density = feature.properties.ACS_13_5YR_B01001_with_ann_HD01_VD01;
+			    if (density < 500 ) fillColor = "#e0f3db"
+			    else if ( density < 1000 ) fillColor = "#ccebc5";
+			    else if ( density < 1500 ) fillColor = "#a8ddb5";			    
+			    else if ( density < 2000 ) fillColor = "#7bccc4";
+			    else if ( density < 2500 ) fillColor = "#4eb3d3";
+			    else if ( density < 3000 ) fillColor = "#2b8cbe";
+			    else if ( density < 3500 ) fillColor = "#0868ac";
+			    else if ( density < 4000 ) fillColor = "#084081";
+			    else if ( density < 4500 ) fillColor = "#063060";
+			    else if ( density < 5000 ) fillColor = "#031830";
+			    else if ( density < 6000 ) fillColor = "#000000";
+			    else fillColor = "#f7fcf0";  // no data
+			    console.log(density + " " + fillColor);
+			    return { color: "#999", weight: 1, fillColor: fillColor, fillOpacity: .6 };
+			},
 			onEachFeature: function(feature, layer){
-				layer.bindPopup(feature.properties["ACS_13_5YR_B01001_with_ann_GEO.display-label"])
+				layer.bindPopup(feature.properties.ACS_13_5YR_B01001_with_ann_HD01_VD01)
 			}
 		}).addTo(map);
 	});
@@ -59,7 +77,7 @@ function onAddTwitterClick() {
 		L.geoJson(twitterJSON, {
 			pointToLayer: function(feature,latlng){
 	      var marker = L.marker(latlng,{icon: twitterIcon});
-	      marker.bindPopup(feature.properties.Username + '<br/>' + feature.properties.Tweet);
+	      marker.bindPopup("@" + feature.properties.Username + ' says <br/> "' + feature.properties.Tweet +'"');
 	      return marker;
 	    }
 		}).addTo(map);
