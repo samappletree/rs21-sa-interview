@@ -14,7 +14,7 @@ function onAddCensusClick() {
 			style: function(feature){
 				var fillColor,
 			        density = feature.properties.ACS_13_5YR_B01001_with_ann_HD01_VD01;
-			    if (density < 500 ) fillColor = "#e0f3db"
+			    if (density < 500 ) fillColor = "#e0f3db";
 			    else if ( density < 1000 ) fillColor = "#ccebc5";
 			    else if ( density < 1500 ) fillColor = "#a8ddb5";			    
 			    else if ( density < 2000 ) fillColor = "#7bccc4";
@@ -86,7 +86,19 @@ function onAddFBClick() {
 	$.get('data/FacebookPlaces_Albuquerque.csv', function(fbData){
 		var fbRawData = Papa.parse(fbData);
 
-		var fbJSON = {
+		var fbJSONg1 = {
+			"type": "FeatureCollection",
+			"features": []
+		}, fbJSONg2 = {
+			"type": "FeatureCollection",
+			"features": []
+		}, fbJSONg3 = {
+			"type": "FeatureCollection",
+			"features": []
+		}, fbJSONg4 = {
+			"type": "FeatureCollection",
+			"features": []
+		}, fbJSONg5 = {
 			"type": "FeatureCollection",
 			"features": []
 		};
@@ -117,15 +129,67 @@ function onAddFBClick() {
 					break;
 				case 5:
 					obj.geometry.coordinates = [Number(currentline[4]), Number(currentline[3])];
-					obj.properties.Category = currentline[1];
+					obj.properties.Category = [currentline[1]];
 					obj.properties.Checkins = Number(currentline[2]);
 					break;
 			}
-			console.log(obj);
-			fbJSON.features.push(obj);
+			if (obj.properties.Checkins >= 150) {
+				if(obj.properties.Category.includes("Health/medical/pharmacy")) fbJSONg1.features.push(obj);
+				else if (obj.properties.Category.includes("Local business")) fbJSONg2.features.push(obj);
+				else if (obj.properties.Category.includes("Real estate")) fbJSONg3.features.push(obj);
+				else if (obj.properties.Category.includes("Landmark")) fbJSONg4.features.push(obj);
+				else if (obj.properties.Category.includes("Restaurant/cafe")) fbJSONg5.features.push(obj);
+			}
+			
 		}
+		var healthIcon = L.icon({
+			iconUrl: '/images/health.png',
+			iconSize: [60,50]
+		});
+		L.geoJson(fbJSONg1,  {
+			pointToLayer: function(feature,latlng){
+		      var marker = L.marker(latlng,{icon: healthIcon});
+		      marker.bindPopup(feature.properties["Name of Place"] + "<br/>Total Facebook Checkins: " + feature.properties.Checkins);
+		      return marker;
+		  }
+	    }).addTo(map);
+	    
+	    var realestateIcon = L.icon({
+			iconUrl: '/images/realestate.png',
+			iconSize: [60,50]
+		});
+	    L.geoJson(fbJSONg3,  {
+			pointToLayer: function(feature,latlng){
+		      var marker = L.marker(latlng,{icon: realestateIcon});
+		      marker.bindPopup(feature.properties["Name of Place"] + "<br/>Total Facebook Checkins: " + feature.properties.Checkins);
+		      return marker;
+		  }
+	    }).addTo(map);
+	    
+	    var landmarkIcon = L.icon({
+			iconUrl: '/images/landmark.png',
+			iconSize: [60,50]
+		});
+	    L.geoJson(fbJSONg4,  {
+			pointToLayer: function(feature,latlng){
+		      var marker = L.marker(latlng,{icon: landmarkIcon});
+		      marker.bindPopup(feature.properties["Name of Place"] + "<br/>Total Facebook Checkins: " + feature.properties.Checkins);
+		      return marker;
+		  }
+	    }).addTo(map);
+	    var restaurantIcon = L.icon({
+			iconUrl: '/images/restaurant.png',
+			iconSize: [60,50]
+		});
+	    L.geoJson(fbJSONg5,  {
+			pointToLayer: function(feature,latlng){
+		      var marker = L.marker(latlng,{icon: restaurantIcon});
+		      marker.bindPopup(feature.properties["Name of Place"] + "<br/>Total Facebook Checkins: " + feature.properties.Checkins);
+		      return marker;
+		  }
+	    }).addTo(map);
 
-		L.geoJson(fbJSON,  {
+		L.geoJson(fbJSONg2,  {
 			onEachFeature: function(feature, layer){
 				layer.bindPopup(feature.properties["Name of Place"] + "<br/>Total Facebook Checkins: " + feature.properties.Checkins);
 	   		}
