@@ -8,10 +8,11 @@ a {
 }
 
 #mapid {
-	height: 500px;
+	height: 550px;
 }
 .buttongrid {
-	display: inline;
+	text-align: center;
+	padding-bottom: 10px;
 }
 
 button {
@@ -24,3 +25,30 @@ button {
     font-size: 16px;
     margin: 5px;
 }
+
+.heading {
+	text-align: center;
+}
+#key {
+	display: inline;
+	padding: 10px;
+}
+.legend { 
+	list-style: none; 
+}
+.legend li { 
+	float: left; 
+	margin-right: 10px; 
+}
+
+#key img {
+	width: 60px;
+	height: 50px;
+	vertical-align: middle;
+}
+#footer {
+	font-size: 10px;
+	text-align: right;
+	padding: 15px;
+}
+

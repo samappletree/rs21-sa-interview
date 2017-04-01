@@ -3,18 +3,38 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='https://unpkg.com/leaflet@1.0.3/dist/leaflet.css')
+    link(rel='stylesheet', href='https://unpkg.com/leaflet.markercluster@1.0.4/dist/MarkerCluster.css')
+    link(rel='stylesheet', href='https://unpkg.com/leaflet.markercluster@1.0.4/dist/MarkerCluster.Default.css')
+
     script(src='https://unpkg.com/leaflet@1.0.3/dist/leaflet.js')
+    script(src='https://unpkg.com/leaflet.markercluster@1.0.4/dist/leaflet.markercluster.js')
     script(src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js")
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js')
   body
+    div(class="heading")
+      h1 Welcome!
+      p Please use the buttons to create your own visualizations within the interactive map.
     
-    #mapid
-    br
     .buttongrid
-      button(id="addCensusbtn" type='button' onclick="onAddCensusClick()") Add Census Block Data
+      button(id="addCensusbtn" type='button' onclick="onAddCensusClick()") Add Census Data
       
       button(type='button' onclick="onAddTwitterClick()") Add Tweets
       button(type='button' onclick="onAddFBClick()") Add Facebook Checkins
       button(type='button' onclick="clearMap()") Clear Map
+
+    #mapid
+    #key
+      h3 Key
+      ul(class="legend")
+        li Tweet: <img src='/images/Twitter_Logo_Blue.png' />
+        li Health/Medical: <img src='/images/health.png' />
+        li Real Estate: <img src="/images/realestate.png" />
+        li Landmark: <img src="/images/landmark.png" />
+        li Restaurant/Cafe: <img src="/images/restaurant.png" />
+        li School/Education/University: <img src='/images/school.png' />
+        br
+    #footer
+      p This site was created using NodeJS, Express, Leaflet and Mapbox.
+      p Designed and Developed by Samantha Applebaum for the RS21 Front End Interview
     
     script(src='/javascripts/script.js')
